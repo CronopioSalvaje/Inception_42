@@ -6,5 +6,6 @@ php-fpm
 
 VOLUME [ "/home/calbor-p/data/wordpress" ]
 
+COPY conf/wp-config.php /var/www/html/wp-config.php
 
 EXPOSE 9000

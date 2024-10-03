@@ -16,6 +16,12 @@ services:
   mariadb:
     build: srcs/mariadb/
     image: mariadb
+    volumes:
+      - /home/calbor-p/data/mariadb:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PWD}
     ports:
       - 3306:3306
     networks:
