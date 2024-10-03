@@ -1,19 +1,27 @@
-version: '2'
 services:
   nginx:
+    build: srcs/nginx/
     image: nginx
-    ports: 443
+    ports:
+      - 443
     networks:
       - myNetwork
   wordpress:
+    build: srcs/wordpress/
     image: wordpress
-    ports: 9000:9000
+    ports: 
+      - 9000:9000
     networks:
       - myNetwork
   mariadb:
+    build: srcs/mariadb/
     image: mariadb
-    ports: 3306:3306
+    ports:
+      - 3306:3306
     networks:
       - myNetwork
+
+networks:
+    myNetwork:
 
 
