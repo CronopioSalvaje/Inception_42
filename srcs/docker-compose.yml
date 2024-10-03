@@ -9,6 +9,8 @@ services:
   wordpress:
     build: srcs/wordpress/
     image: wordpress
+    volumes: 
+      - /home/calbor-p/data/wordpress:/var/www/html/
     ports: 
       - 9000:9000
     networks:
