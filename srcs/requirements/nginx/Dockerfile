@@ -5,8 +5,8 @@ RUN apt-get update && apt-get install -y \
     openssl \
     libssl-dev
 
-ADD conf/nginx.conf /etc/nginx/
-ADD conf/hosts  /etc/
+COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+COPY ./conf/hosts /etc/hosts
 
 EXPOSE 443
 
