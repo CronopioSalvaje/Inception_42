@@ -1,17 +1,31 @@
 COMPOSE = srcs/docker-compose.yml
+GREEN = "\033[32m"
+RESET = "\033[0m"
 
 test:
 	cd srcs && docker compose up
 
 
 up:
-	docker compose -f $(COMPOSE) up
+	docker compose -f $(COMPOSE) up --build
 
 down:
 	docker compose -f $(COMPOSE) down
 
+downv:
+	docker compose -f $(COMPOSE) down -v
+
+
 re:
 	docker compose -f $(COMPOSE) down
+	@docker images -q > IMAGES
+	@cat IMAGES | while IFS= read -r line; do \
+		docker rmi "$$line"; \
+	done
+	@rm IMAGES
+	@echo ${GREEN}Images deleted${RESET}
+	@sudo rm -rf /home/calbor-p/data/mariadb/*
+
 	docker compose -f $(COMPOSE) up
 
 clean:
@@ -20,4 +34,4 @@ clean:
 		docker rmi "$$line"; \
 	done
 	@rm IMAGES
-	@echo "\033[32mImages deleted\033[0m"
+	@echo ${GREEN}Images deleted${RESET}

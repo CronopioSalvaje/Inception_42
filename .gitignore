@@ -1,0 +1,2 @@
+find /home/calbor-p/data/wordpress -type d -exec chmod 755 {} \;  # Répertoires
+find /home/calbor-p/data/wordpress -type f -exec chmod 644 {} \;

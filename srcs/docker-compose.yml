@@ -3,14 +3,14 @@ services:
     build: 
       context: .
       dockerfile: ./requirements/nginx/Dockerfile
-    image: nginx
     ports:
       - 443
     networks:
       - myNetwork
   wordpress:
-    build: srcs/wordpress/
-    image: wordpress
+    build: 
+      context: .
+      dockerfile: ./requirements/wordpress/Dockerfile
     volumes: 
       - /home/calbor-p/data/wordpress:/var/www/html/
     ports: 
@@ -18,8 +18,9 @@ services:
     networks:
       - myNetwork
   mariadb:
-    build: srcs/mariadb/
-    image: mariadb
+    build: 
+      context: .
+      dockerfile: ./requirements/mariadb/Dockerfile
     volumes:
       - /home/calbor-p/data/mariadb:/var/lib/mysql
     environment:
@@ -28,6 +29,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PWD}
     ports:
       - 3306:3306
+    user: "1001:1001"
     networks:
       - myNetwork
 
