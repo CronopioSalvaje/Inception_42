@@ -1,39 +1,41 @@
-services:
-  nginx:
-    build: 
-      context: .
-      dockerfile: ./requirements/nginx/Dockerfile
-    ports:
-      - 443
-    networks:
-      - myNetwork
-  wordpress:
-    build: 
-      context: .
-      dockerfile: ./requirements/wordpress/Dockerfile
-    volumes: 
-      - /home/calbor-p/data/wordpress:/var/www/html/
-    ports: 
-      - 9000:9000
-    networks:
-      - myNetwork
-  mariadb:
-    build: 
-      context: .
-      dockerfile: ./requirements/mariadb/Dockerfile
-    volumes:
-      - /home/calbor-p/data/mariadb:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PWD}
-    ports:
-      - 3306:3306
-    user: "1001:1001"
-    networks:
-      - myNetwork
+  services:
+    nginx:
+      build: 
+        context: .
+        dockerfile: ./requirements/nginx/Dockerfile
+      ports:
+        - 443
+      networks:
+        - myNetwork
+    wordpress:
+      build: 
+        context: .
+        dockerfile: ./requirements/wordpress/Dockerfile
+      volumes: 
+        - /home/calbor-p/data/wordpress:/var/www/html/
+      ports: 
+        - 9000:9000
+      networks:
+        - myNetwork
+    mariadb:
+      build: 
+        context: .
+        dockerfile: ./requirements/mariadb/Dockerfile
+      volumes:
+        - /home/calbor-p/data/mariadb:/var/lib/mysql
+      environment:
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT}
+        MYSQL_USER: ${MYSQL_USER}
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
+        MYSQL_PASSWORD: ${MYSQL_PWD}
+      ports:
+        - 3306:3306
+      networks:
+        - myNetwork
+      env_file:
+      - .env
 
-networks:
-    myNetwork:
+  networks:
+      myNetwork:
 
 

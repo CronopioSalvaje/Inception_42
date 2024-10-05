@@ -7,7 +7,7 @@ test:
 
 
 up:
-	docker compose -f $(COMPOSE) up --build
+	docker compose -f $(COMPOSE) up --force-recreate
 
 down:
 	docker compose -f $(COMPOSE) down
