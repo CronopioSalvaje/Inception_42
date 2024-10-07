@@ -10,6 +10,9 @@ RUN apt-get update && apt-get install -y \
     php7.4-curl \
     wordpress
 
+RUN chown www-data:www-data /var/www/html
+
+
 RUN mkdir -p /run/php
 
 RUN cd /usr/sbin/ && ls
