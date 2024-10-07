@@ -16,7 +16,6 @@ RUN cd /usr/sbin/ && ls
 
 VOLUME [ "/home/calbor-p/data/wordpress" ]
 
-COPY requirements/wordpress/conf/wp-config.php /var/www/html/wp-config.php
 COPY requirements/wordpress/conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf 
 
 EXPOSE 9000

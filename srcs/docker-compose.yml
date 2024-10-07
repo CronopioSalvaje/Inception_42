@@ -7,7 +7,7 @@
       ports:
         - 443:443
       volumes:
-      - /home/calbor-p/data/wordpress:/var/www/html
+        - /home/calbor-p/data/wordpress:/var/www/html
       networks:
         - myNetwork
       depends_on:
@@ -19,7 +19,7 @@
         context: .
         dockerfile: ./requirements/wordpress/Dockerfile
       volumes: 
-        - /home/calbor-p/data/wordpress:/var/www/html/
+        - /home/calbor-p/data/wordpress:/var/www/html
       ports: 
         - 9000:9000
       expose:
