@@ -31,7 +31,7 @@ re:
 clean:
 	@docker images -q > IMAGES
 	@cat IMAGES | while IFS= read -r line; do \
-		docker rmi "$$line"; \
+		docker rmi -f "$$line"; \
 	done
 	@rm IMAGES
 	@echo ${GREEN}Images deleted${RESET}
