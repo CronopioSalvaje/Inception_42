@@ -24,8 +24,6 @@ re:
 	done
 	@rm IMAGES
 	@echo ${GREEN}Images deleted${RESET}
-	@sudo rm -rf /home/calbor-p/data/mariadb/*
-
 	docker compose -f $(COMPOSE) up
 
 clean:
@@ -35,3 +33,7 @@ clean:
 	done
 	@rm IMAGES
 	@echo ${GREEN}Images deleted${RESET}
+	@docker builder prune --all --force
+	@echo ${GREEN}Cache cleaned${RESET}
+	@docker system df
+

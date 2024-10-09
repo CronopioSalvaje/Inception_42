@@ -6,6 +6,8 @@ RUN mkdir -p /etc/nginx/ssl
 
 
 COPY requirements/nginx/conf/default.conf /etc/nginx/conf.d/default.conf
+COPY requirements/nginx/conf/musicaltheory.conf /etc/nginx/conf.d/musicaltheory.conf
+
 COPY requirements/nginx/conf/nginx.conf /etc/nginx/nginx.conf
 
 # Générer un certificat auto-signé (déplacé après la copie de la configuration)
@@ -16,6 +18,8 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
     && chmod 644 /etc/nginx/ssl/nginx.crt \
     && chmod 644 /etc/nginx/ssl/nginx.key
 
+
+    
 
 EXPOSE 443
 
