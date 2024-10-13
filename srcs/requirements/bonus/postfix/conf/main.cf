@@ -1,11 +1,13 @@
 # /etc/postfix/main.cf
-myhostname = mail.calbor-p.42.fr
-mydomain = calbor-p.42.fr
+myhostname = musicaltheory.42.fr
+mydomain = musicaltheory.42.fr
 myorigin = /etc/mailname
 inet_interfaces = all
-inet_protocols = ipv4
+inet_protocols = all
+maillog_file = /var/log/mail.log
 mydestination = $myhostname, localhost.$mydomain, localhost
-mynetworks = 127.0.0.0/8 [::1]/128
+mynetworks = 127.0.0.0/8 [::1]/128 172.18.0.0/16
 relay_domains = 
 home_mailbox = Maildir/
+queue_directory = /var/spool/postfix
 smtpd_banner = $myhostname ESMTP

@@ -21,6 +21,7 @@
         dockerfile: ./requirements/wordpress/Dockerfile
       volumes: 
         - /home/calbor-p/data/wordpress:/var/www/html
+        - /home/calbor-p/data/musicaltheory:/var/www/musicaltheory
       ports: 
         - 9000:9000
       expose:
@@ -49,6 +50,25 @@
       env_file:
       - .env
       restart: unless-stopped
+    postfix:
+      container_name: postfix
+      build:
+        context: .
+        dockerfile: ./requirements/bonus/postfix/Dockerfile
+      volumes:
+        - /home/calbor-p/data/postfix/spool:/var/spool/postfix
+        - /home/calbor-p/data/postfix/lib:/var/lib/postfix
+        - /home/calbor-p/data/postfix/mail:/home/admin/Maildir 
+      ports: 
+        - "25:25"
+      env_file:
+      - .env
+      networks:
+        - myNetwork
+      environment:
+        - "POSTFIX_MYDOMAIN=${POSTFIX_MYDOMAIN}"
+        - "POSTFIX_MYHOSTNAME=${POSTFIX_MYHOSTNAME}"
+
 
   networks:
       myNetwork:
