@@ -2,15 +2,11 @@ FROM debian:11
 
 # Installation des paquets nécessaires
 RUN apt-get update && apt-get install -y \
-    postfix \
     vim \
-    mailutils \
-    libsasl2-2 \
-    libssl1.1 \
-    ca-certificates \
-    tzdata \
-    netbase \
-    && rm -rf /var/lib/apt/lists/*
+    mailutils 
+RUN  apt install -y postfix  && rm -rf /var/lib/apt/lists/*
+
+
 
 # Configuration de Postfix
 RUN postconf compatibility_level=2
@@ -42,4 +38,7 @@ RUN chmod +x /entrypoint.sh
 EXPOSE 25
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["postfix", "start-fg"]
+#CMD ["postfix", "start-fg"]
+
+
+

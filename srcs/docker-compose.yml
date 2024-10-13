@@ -59,15 +59,18 @@
         - /home/calbor-p/data/postfix/spool:/var/spool/postfix
         - /home/calbor-p/data/postfix/lib:/var/lib/postfix
         - /home/calbor-p/data/postfix/mail:/home/admin/Maildir 
-      ports: 
+      ports:
         - "25:25"
       env_file:
       - .env
       networks:
         - myNetwork
+      hostname: ${POSTFIX_MYDOMAIN}
+      command: postfix start-fg
       environment:
         - "POSTFIX_MYDOMAIN=${POSTFIX_MYDOMAIN}"
         - "POSTFIX_MYHOSTNAME=${POSTFIX_MYHOSTNAME}"
+      restart: unless-stopped
 
 
   networks:
