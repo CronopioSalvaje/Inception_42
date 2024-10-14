@@ -71,6 +71,17 @@
         - "POSTFIX_MYDOMAIN=${POSTFIX_MYDOMAIN}"
         - "POSTFIX_MYHOSTNAME=${POSTFIX_MYHOSTNAME}"
       restart: unless-stopped
+    adminer:
+      container_name: adminer
+      build:
+        context: .
+        dockerfile: ./requirements/bonus/adminer/Dockerfile
+      ports:
+        - 8080:8080
+      volumes: 
+        - /home/calbor-p/data/adminer:/usr/share/adminer
+      networks:
+        - myNetwork
 
 
   networks:
