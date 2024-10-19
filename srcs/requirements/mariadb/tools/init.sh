@@ -27,5 +27,7 @@ EOF
     mysqladmin -u root shutdown
 fi
 
+chown -R mysql:mysql /var/lib/mysql
+
 # Démarrer MySQL avec les paramètres spécifiés
 exec mysqld --user=mysql --datadir=/var/lib/mysql

@@ -10,9 +10,9 @@
         - /home/calbor-p/data/wordpress:/var/www/html
         - /home/calbor-p/data/musicaltheory:/var/www/musicaltheory
       networks:
-        - inception
+        - myNetwork
       depends_on:
-        - wordpress
+      - wordpress
       restart: unless-stopped 
     wordpress:
       container_name: wordpress
@@ -27,7 +27,7 @@
       expose:
       - "9000"
       networks:
-        - inception
+        - myNetwork
       depends_on:
         - mariadb
       restart: unless-stopped
@@ -46,10 +46,62 @@
       ports:
         - 3306:3306
       networks:
-        - inception
+        - myNetwork
       env_file:
       - .env
       restart: unless-stopped
+    postfix:
+      container_name: postfix
+      build:
+        context: .
+        dockerfile: ./requirements/bonus/postfix/Dockerfile
+      volumes:
+        - /home/calbor-p/data/postfix/spool:/var/spool/postfix
+        - /home/calbor-p/data/postfix/lib:/var/lib/postfix
+        - /home/calbor-p/data/postfix/mail:/home/admin/Maildir 
+      ports:
+        - "25:25"
+      env_file:
+      - .env
+      networks:
+        - myNetwork
+      hostname: ${POSTFIX_MYDOMAIN}
+      command: postfix start-fg
+      environment:
+        - "POSTFIX_MYDOMAIN=${POSTFIX_MYDOMAIN}"
+        - "POSTFIX_MYHOSTNAME=${POSTFIX_MYHOSTNAME}"
+      restart: unless-stopped
+    adminer:
+      container_name: adminer
+      build:
+        context: .
+        dockerfile: ./requirements/bonus/adminer/Dockerfile
+      ports:
+        - 8080:8080
+      volumes: 
+        - /home/calbor-p/data/adminer:/usr/share/adminer
+      networks:
+        - myNetwork
+
+    redis:
+      container_name: redis
+      build:
+        context: .
+        dockerfile: ./requirements/bonus/rediscache/Dockerfile
+      networks:
+        - inception
+
+
+  networks:
+      myNetwork:
+        driver: bridge
+
+ 
+
+
+
+
+
     adminer:
       container_name: adminer
       build:
@@ -70,33 +122,3 @@
         dockerfile: ./requirements/bonus/rediscache/Dockerfile
       networks:
         - inception
-      command: ["redis-server", "/etc/redis/redis.conf"]
-    vsftpd:
-      container_name: vsftpd
-      build:
-        context: .
-        dockerfile: ./requirements/bonus/vsftpd/Dockerfile
-        args:
-          USER_NAME: "${FTP_USER}"
-          USER_PWD: "${FTP_PWD}"
-      volumes:
-        - /home/calbor-p/data/wordpress:/home/calbor-p
-      ports:
-      - "21:21"        # (FTP standard)
-      - "20:20"        # (FTP data en mode actif)
-      - "40000-50000:40000-50000"  #(FTP en mode passif
-      environment:
-      - FTP_USER=${FTP_USER}      # Si nécessaire
-      - FTP_PASS=${FTP_PWD}  
-      networks:
-        - inception
-
-     
-
-
-      
-  networks:
-      inception:
-        driver: bridge
-
- 

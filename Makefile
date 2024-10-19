@@ -37,3 +37,8 @@ clean:
 	@echo ${GREEN}Cache cleaned${RESET}
 	@docker system df
 
+logs:
+	docker compose -f $(COMPOSE) logs wordpress
+	docker compose -f $(COMPOSE) logs mariadb
+	docker compose -f $(COMPOSE) logs nginx
+

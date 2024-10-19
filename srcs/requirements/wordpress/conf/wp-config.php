@@ -6,6 +6,8 @@ define('DB_HOST', 'mariadb:3306');  // Adresse du service MariaDB dans docker-co
 
 define('DB_CHARSET', 'utf8');
 define('DB_COLLATE', '');
+define('WP_CACHE_KEY_SALT', 'calbor-p.42.fr');
+define('WP_REDIS_HOST', 'redis');
 
 // Clés de sécurité (générées par https://api.wordpress.org/secret-key/1.1/salt/)
 define('AUTH_KEY',         'g}-8IWrB-ufP?};tub2+D:_AASou{o3W#5?:zJV(oR@{{.&cz3}?~u-BN>XuYHM?');

@@ -9,7 +9,10 @@ RUN apt-get update && apt-get install -y \
     php7.4-xml \
     php7.4-curl \
     wordpress \
+    #net-tools \
+    iputils-ping \
     && rm -rf /var/lib/apt/lists/*
+    #php-redis \
 
 WORKDIR /var/www/html/
 

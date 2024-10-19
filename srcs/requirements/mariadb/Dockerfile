@@ -9,6 +9,7 @@ RUN mkdir -p /run/mysqld && \
 
 # Copier le fichier de configuration personnalisé
 COPY requirements/mariadb/conf/my.cnf /etc/mysql/my.cnf
+COPY requirements/mariadb/conf/hosts /etc/hosts
 
 # Script d'initialisation de la base de données
 COPY requirements/mariadb/tools/init.sh /docker-entrypoint.sh
