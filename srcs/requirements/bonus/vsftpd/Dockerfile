@@ -19,7 +19,7 @@ RUN mkdir -p /var/run/vsftpd/empty
 RUN chmod 755 /var/run/vsftpd/empty
 RUN mkdir -p /var/ftp/uploads
 RUN chmod 755 /var/ftp/uploads
-
+RUN usermod -aG 33 $USER_NAME
 
 # Configurer vsftpd
 COPY requirements/bonus/vsftpd/conf/vsftpd.conf /etc/vsftpd.conf

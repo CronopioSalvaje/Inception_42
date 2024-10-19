@@ -80,20 +80,16 @@
           USER_NAME: "${FTP_USER}"
           USER_PWD: "${FTP_PWD}"
       volumes:
-        - /home/calbor-p/data/wordpress:/home/calbor-p
+        - /home/calbor-p/data/wordpress:/var/ftp/uploads
       ports:
       - "21:21"        # (FTP standard)
       - "20:20"        # (FTP data en mode actif)
-      - "40000-50000:40000-50000"  #(FTP en mode passif
+      - "20000-20010:20000-20010"  #(FTP en mode passif)
       environment:
       - FTP_USER=${FTP_USER}      # Si nécessaire
       - FTP_PASS=${FTP_PWD}  
       networks:
         - inception
-
-     
-
-
       
   networks:
       inception:
