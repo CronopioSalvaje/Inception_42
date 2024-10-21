@@ -1,0 +1,30 @@
+*{
+    margin :0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-size: 200px;
+    background-color: #222;
+    color : #222;
+    /*-webkit-text-stroke : 1px white;*/
+    text-shadow: 0 0 5px #f0f0f0,    /* Aura blanche */
+    0 0 10px #ffafff,   /* Aura plus diffuse */
+    0 0 15px #ff00ff, 
+    0 0 20px #ff00ff, /* Aura colorée */
+    0 0 30px #ff00ff,
+    0 0 40px #ff00ff;
+  
+}
+
+
+.error
+{
+
+}

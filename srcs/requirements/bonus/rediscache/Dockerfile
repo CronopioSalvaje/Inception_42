@@ -1,4 +1,4 @@
-From debian:11
+FROM debian:11
 
 RUN apt-get update && apt-get install -y \
     redis-server

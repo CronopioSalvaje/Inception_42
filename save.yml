@@ -90,15 +90,6 @@
       - FTP_PASS=${FTP_PWD}  
       networks:
         - inception
-    node:
-      container_name: node
-      build:
-        context: .
-        dockerfile: ./requirements/bonus/node/Dockerfile
-      ports:
-        - 3000:3000
-      networks:
-        - inception
     postfix:
       container_name: postfix
       build:
@@ -115,11 +106,21 @@
       networks:
         - inception
       hostname: ${POSTFIX_MYDOMAIN}
-      command: postfix start-fg
       environment:
         - "POSTFIX_MYDOMAIN=${POSTFIX_MYDOMAIN}"
         - "POSTFIX_MYHOSTNAME=${POSTFIX_MYHOSTNAME}"
-      restart: unless-stopped
+      command: sh -c "postfix start-fg -v && tail -f /var/log/mail.log"
+    node:
+      container_name: node
+      build:
+        context: .
+        dockerfile: ./requirements/bonus/node/Dockerfile
+      ports:
+        - 3000:3000
+      volumes: 
+        - /home/calbor-p/data/node:/var/www/html
+      networks:
+        - inception
       
   networks:
       inception:

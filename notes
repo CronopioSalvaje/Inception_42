@@ -1,1 +1,120 @@
- 
+fichier Dockerfile
+FROM debian:11
+
+# Installation des paquets nécessaires
+RUN apt-get update && apt-get install -y \
+    vim \
+    mailutils 
+RUN  apt install -y postfix  && rm -rf /var/lib/apt/lists/*
+
+
+
+# Configuration de Postfix
+RUN postconf compatibility_level=2
+
+# Création du fichier de log
+RUN touch /var/log/mail.log && chmod 644 /var/log/mail.log
+
+# Création de l'utilisateur admin et de son répertoire Maildir
+RUN adduser --quiet --disabled-password admin \
+    && mkdir -p /home/admin/Maildir \
+    && chown -R admin:admin /home/admin/Maildir
+
+# Création et configuration des répertoires Postfix
+RUN for dir in defer incoming active deferred bounce corrupt hold; do \
+        mkdir -p /var/spool/postfix/$dir; \
+        chown postfix:postfix /var/spool/postfix/$dir; \
+        chmod 700 /var/spool/postfix/$dir; \
+    done \
+    && chown -R postfix:postdrop /var/spool/postfix/public /var/spool/postfix/maildrop \
+    && chmod 730 /var/spool/postfix/public /var/spool/postfix/maildrop
+
+# Création d'un script d'entrée pour gérer les permissions et démarrer Postfix
+COPY requirements/bonus/postfix/conf/main.cf /etc/postfix/main.cf
+COPY requirements/bonus/postfix/conf/mailname /etc/mailname
+COPY requirements/bonus/postfix/tools/entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+EXPOSE 25
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["postfix", "start-fg"]
+
+
+extrait du fichier docker-compose.yml
+
+postfix:
+    container_name: postfix
+    build:
+      context: .
+      dockerfile: ./requirements/bonus/postfix/Dockerfile
+    volumes:
+      - /home/calbor-p/data/postfix/spool:/var/spool/postfix
+      - /home/calbor-p/data/postfix/lib:/var/lib/postfix
+      - /home/calbor-p/data/postfix/mail:/home/admin/Maildir 
+    ports:
+      - "25:25"
+    env_file:
+    - .env
+    networks:
+      - inception
+    hostname: ${POSTFIX_MYDOMAIN}
+    command: postfix start-fg
+    environment:
+      - "POSTFIX_MYDOMAIN=${POSTFIX_MYDOMAIN}"
+      - "POSTFIX_MYHOSTNAME=${POSTFIX_MYHOSTNAME}"
+    restart: unless-stopped
+
+
+fichier entrypoint.sh
+#!/bin/sh
+set -e
+
+echo "Starting entrypoint script"
+
+# Vérification et correction des permissions
+for dir in defer incoming active deferred bounce corrupt hold; do
+    echo "Setting permissions for /var/spool/postfix/$dir"
+    mkdir -p /var/spool/postfix/$dir
+    chown postfix:postfix /var/spool/postfix/$dir
+    chmod 700 /var/spool/postfix/$dir
+done
+
+echo "Setting permissions for public and maildrop directories"
+chown -R postfix:postdrop /var/spool/postfix/public /var/spool/postfix/maildrop /var/spool/postfix/deferred/
+chmod 730 /var/spool/postfix/public /var/spool/postfix/maildrop
+
+# Assurez-vous que le fichier de log est accessible
+echo "Setting up mail log"
+touch /var/log/mail.log
+chmod 644 /var/log/mail.log
+
+echo "Running postfix check"
+postfix check
+
+echo "Starting Postfix"
+# Démarrage de Postfix
+
+#exec postfix start-fg
+#exec "$@"
+
+
+fichier main.cf
+# /etc/postfix/main.cf
+myhostname = musicaltheory.42.fr
+mydomain = musicaltheory.42.fr
+myorigin = /etc/mailname
+inet_interfaces = all
+inet_protocols = all
+maillog_file = /var/log/mail.log
+mydestination = $myhostname, localhost.$mydomain, localhost
+mynetworks = 127.0.0.0/8 [::1]/128 172.18.0.0/16
+relay_domains = 
+home_mailbox = Maildir/
+queue_directory = /var/spool/postfix
+smtpd_banner = $myhostname ESMTP
+
+
+fichier mailname 
+musicaltheory.42.fr
