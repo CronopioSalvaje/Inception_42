@@ -1,7 +1,0 @@
-MAIL FROM:<admin@musicaltheory.42.fr>
-RCPT TO:<chrisap@live.fr>
-DATA
-Subject: Test
-This is a test message.
-.
-QUIT
