@@ -22,6 +22,8 @@
       volumes: 
         - /home/calbor-p/data/wordpress:/var/www/html
         - /home/calbor-p/data/musicaltheory:/var/www/musicaltheory
+      environment:
+        WORDPRESS_REDIS_HOST: redis
       ports: 
         - 9000:9000
       expose:

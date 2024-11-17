@@ -26,6 +26,7 @@ RUN chown -R www-data:www-data /var/www/html
 RUN mkdir -p /run/php
 
 COPY requirements/wordpress/conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
+COPY requirements/wordpress/conf/php.ini /etc/php/7.4/fpm/php.ini
 COPY requirements/wordpress/tools/init.sh /usr/local/bin/init.sh
 
 EXPOSE 9000
