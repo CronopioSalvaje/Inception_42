@@ -1,100 +1,134 @@
-  services:
-    nginx:
-      container_name: nginx
-      build: 
-        context: .
-        dockerfile: ./requirements/nginx/Dockerfile
-      ports:
-        - 443:443
-      volumes:
-        - /home/calbor-p/data/wordpress:/var/www/html
-        - /home/calbor-p/data/musicaltheory:/var/www/musicaltheory
-      networks:
-        - inception
-      depends_on:
-        - wordpress
-      restart: unless-stopped 
-    wordpress:
-      container_name: wordpress
-      build: 
-        context: .
-        dockerfile: ./requirements/wordpress/Dockerfile
-      volumes: 
-        - /home/calbor-p/data/wordpress:/var/www/html
-        - /home/calbor-p/data/musicaltheory:/var/www/musicaltheory
-      environment:
-        WORDPRESS_REDIS_HOST: redis
-      ports: 
-        - 9000:9000
-      expose:
+version: "3.8"
+
+services:
+  nginx:
+    container_name: nginx
+    build: 
+      context: .
+      dockerfile: ./requirements/nginx/Dockerfile
+    ports:
+      - 443:443
+    volumes:
+      - wordpress-data:/var/www/html
+      - musicaltheory-data:/var/www/musicaltheory
+    networks:
+      - inception
+    depends_on:
+      - wordpress
+    restart: unless-stopped 
+
+  wordpress:
+    container_name: wordpress
+    build: 
+      context: .
+      dockerfile: ./requirements/wordpress/Dockerfile
+    volumes: 
+      - wordpress-data:/var/www/html
+      - musicaltheory-data:/var/www/musicaltheory
+    environment:
+      WORDPRESS_REDIS_HOST: redis
+    ports: 
+      - 9000:9000
+    expose:
       - "9000"
-      networks:
-        - inception
-      depends_on:
-        - mariadb
-      restart: unless-stopped
-    mariadb:
-      container_name: mariadb
-      build: 
-        context: .
-        dockerfile: ./requirements/mariadb/Dockerfile
-      volumes:
-        - /home/calbor-p/data/mariadb:/var/lib/mysql
-      environment:
-        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT}
-        MYSQL_USER: ${MYSQL_USER}
-        MYSQL_DATABASE: ${MYSQL_DATABASE}
-        MYSQL_PASSWORD: ${MYSQL_PWD}
-      ports:
-        - 3306:3306
-      networks:
-        - inception
-      env_file:
+    networks:
+      - inception
+    depends_on:
+      - mariadb
+    restart: unless-stopped
+
+  mariadb:
+    container_name: mariadb
+    build: 
+      context: .
+      dockerfile: ./requirements/mariadb/Dockerfile
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_PASSWORD: ${MYSQL_PWD}
+    ports:
+      - 3306:3306
+    networks:
+      - inception
+    env_file:
       - .env
-      restart: unless-stopped
-    adminer:
-      container_name: adminer
-      build:
-        context: .
-        dockerfile: ./requirements/bonus/adminer/Dockerfile
-      ports:
-        - 8080:8080
-      volumes: 
-        - /home/calbor-p/data/adminer:/usr/share/adminer
-      depends_on:
-        - mariadb
-      networks:
-        - inception
-    redis:
-      container_name: redis
-      build:
-        context: .
-        dockerfile: ./requirements/bonus/rediscache/Dockerfile
-      networks:
-        - inception
-      command: ["redis-server", "/etc/redis/redis.conf"]
-    vsftpd:
-      container_name: vsftpd
-      build:
-        context: .
-        dockerfile: ./requirements/bonus/vsftpd/Dockerfile
-        args:
-          USER_NAME: "${FTP_USER}"
-          USER_PWD: "${FTP_PWD}"
-      volumes:
-        - /home/calbor-p/data/wordpress:/var/ftp/uploads
-      ports:
+    restart: unless-stopped
+
+  adminer:
+    container_name: adminer
+    build:
+      context: .
+      dockerfile: ./requirements/bonus/adminer/Dockerfile
+    ports:
+      - 8080:8080
+    volumes: 
+      - adminer-data:/usr/share/adminer
+    depends_on:
+      - mariadb
+    networks:
+      - inception
+
+  redis:
+    container_name: redis
+    build:
+      context: .
+      dockerfile: ./requirements/bonus/rediscache/Dockerfile
+    networks:
+      - inception
+    command: ["redis-server", "/etc/redis/redis.conf"]
+
+  vsftpd:
+    container_name: vsftpd
+    build:
+      context: .
+      dockerfile: ./requirements/bonus/vsftpd/Dockerfile
+      args:
+        USER_NAME: "${FTP_USER}"
+        USER_PWD: "${FTP_PWD}"
+    volumes:
+      - wordpress-data:/var/ftp/uploads
+    ports:
       - "21:21"        # (FTP standard)
       - "20:20"        # (FTP data en mode actif)
       - "20000-20010:20000-20010"  #(FTP en mode passif)
-      environment:
+    environment:
       - FTP_USER=${FTP_USER}      # Si nécessaire
       - FTP_PASS=${FTP_PWD}  
-      networks:
-        - inception
+    networks:
+      - inception
       
-  networks:
-      inception:
-        driver: bridge
+networks:
+  inception:
+    driver: bridge
 
- 
+volumes:
+  wordpress-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/calbor-p/data/wordpress  # Monte ce chemin local
+
+  musicaltheory-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/calbor-p/data/musicaltheory
+
+  mariadb-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/calbor-p/data/mariadb
+
+  adminer-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/calbor-p/data/adminer
